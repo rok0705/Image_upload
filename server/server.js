@@ -28,7 +28,7 @@ app.listen(PORT, () =>
   console.log("Express server listening on PORT: " + PORT)
 );
 
-app.post("/upload", upload.single("imageTest"), (req, res) => {
+app.post("/upload", upload.single("image"), (req, res) => {
   console.log("req.file:", req.file);
   res.json(req.file);
 });
