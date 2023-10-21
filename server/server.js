@@ -29,6 +29,7 @@ app.listen(PORT, () =>
 );
 
 app.post("/upload", upload.single("image"), (req, res) => {
+  // return res.status(500);
   console.log("req.file:", req.file);
   res.json(req.file);
 });
