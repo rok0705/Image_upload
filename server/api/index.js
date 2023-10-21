@@ -35,9 +35,9 @@ app.get("/api/item/:slug", (req, res) => {
   res.end(`Item: ${slug}`);
 });
 
-app.use("/uploads,", express.static("uploads"));
+app.use("/api/uploads,", express.static("uploads"));
 
-app.post("/upload", upload.single("image"), (req, res) => {
+app.post("/api/upload", upload.single("image"), (req, res) => {
   console.log("req.file:", req.file);
   res.json(req.file);
 });
