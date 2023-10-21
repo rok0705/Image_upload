@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { v4 } = require("uuid");
+const { v4: uuid } = require("uuid");
 const mime = require("mime-types");
 const multer = require("multer");
 
@@ -18,7 +18,7 @@ const upload = multer({
     else cb("invalid file type", false);
   },
   limits: {
-    fileSize: 1024 * 1024 * 10,
+    fileSize: 1024 * 1024 * 4.5,
   },
 });
 
@@ -38,7 +38,7 @@ app.get("/api/item/:slug", (req, res) => {
 app.use("/api/uploads,", express.static("uploads"));
 
 app.post("/api/upload", upload.single("image"), (req, res) => {
-  console.log("req.file:", req.file);
+  console.log("req.file:", req.file, uuid());
   res.json(req.file);
 });
 
