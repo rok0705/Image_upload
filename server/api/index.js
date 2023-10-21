@@ -5,7 +5,10 @@ const mime = require("mime-types");
 const multer = require("multer");
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "./uploads"),
+  destination: (req, file, cb) => {
+    console.log("destination at /uploads");
+    cb(null, "./uploads");
+  },
   filename: (req, file, cb) =>
     cb(null, `${uuid()}.${mime.extension(file.mimetype)}`),
 });
@@ -35,7 +38,7 @@ app.get("/api/item/:slug", (req, res) => {
   res.end(`Item: ${slug}`);
 });
 
-app.use("/api/uploads,", express.static("uploads"));
+// app.use("/api/uploads,", express.static("uploads"));
 
 app.post("/api/upload", upload.single("image"), (req, res) => {
   console.log("req.file:", req.file, uuid());
