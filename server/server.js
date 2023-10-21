@@ -24,13 +24,13 @@ const upload = multer({
 const app = express();
 const PORT = 5000;
 
-app.use("/uploads", express.static("uploads"));
+app.listen(PORT, () =>
+  console.log("Express server listening on PORT: " + PORT)
+);
 
 app.post("/upload", upload.single("imageTest"), (req, res) => {
   console.log("req.file:", req.file);
   res.json(req.file);
 });
 
-app.listen(PORT, () =>
-  console.log("Express server listening on PORT: " + PORT)
-);
+app.use("/uploads", express.static("uploads"));
