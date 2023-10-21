@@ -15,4 +15,6 @@ app.get("/api/item/:slug", (req, res) => {
   res.end(`Item: ${slug}`);
 });
 
+app.use("/uploads,", express.static("uploads"));
+
 module.exports = app;
