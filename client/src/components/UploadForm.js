@@ -3,10 +3,13 @@ import axios from "axios";
 import "./UploadForm.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ProgressBar from "./ProgressBar";
 
 const UploadForm = () => {
+  const defaultFileName = "이미지 파일을 업로드해주세요.";
   const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState("이미지 파일을 업로드해주세요.");
+  const [fileName, setFileName] = useState(defaultFileName);
+  const [percent, setPercent] = useState(0);
 
   const imageSelectHandler = (event) => {
     const imageFile = event.target.files[0];
@@ -21,11 +24,20 @@ const UploadForm = () => {
     try {
       const res = await axios.post("/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (ProgressEvent) => {
+          setPercent(
+            Math.round((100 * ProgressEvent.loaded) / ProgressEvent.total)
+          );
+        },
       });
-      console.log("res:", res);
+      setTimeout(() => {
+        setPercent(0);
+        setFileName(defaultFileName);
+      }, 6000);
       toast.success("Image upload success!");
     } catch (err) {
-      console.error("err:", err);
+      setPercent(0);
+      setFileName(defaultFileName);
       toast.error("Image upload error!");
     }
   };
@@ -33,6 +45,7 @@ const UploadForm = () => {
   return (
     <div>
       <form onSubmit={(event) => onSubmit(event)}>
+        <ProgressBar percent={percent} />
         <div className="file-dropper">
           {fileName}
           <input
