@@ -27,7 +27,7 @@ const upload = multer({
 
 app.get("/api", (req, res) => {
   console.log("backend : received GET /api HTTP request!");
-  const path = `/api/item/${v4()}`;
+  const path = `/api/item/${uuid()}`;
   res.setHeader("Content-Type", "text/html");
   res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
   res.end(`Hello! Go to item: <a href="${path}">${path}</a>`);
