@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import "./UploadForm.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProgressBar from "./ProgressBar";
+import { ImageContext } from "../context/ImageContext";
 
 const UploadForm = () => {
   const defaultFileName = "이미지 파일을 업로드해주세요.";
@@ -11,6 +12,7 @@ const UploadForm = () => {
   const [imgSrc, setImgSrc] = useState(null);
   const [fileName, setFileName] = useState(defaultFileName);
   const [percent, setPercent] = useState(0);
+  const [images, setImages] = useContext(ImageContext);
 
   const imageSelectHandler = (event) => {
     const imageFile = event.target.files[0];
@@ -41,6 +43,7 @@ const UploadForm = () => {
         setImgSrc(null);
       }, 6000);
       toast.success("Image upload success!");
+      setImages([...images, res.data]);
     } catch (err) {
       setPercent(0);
       setFileName(defaultFileName);
