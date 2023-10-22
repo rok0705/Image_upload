@@ -14,6 +14,7 @@ const UploadForm = () => {
 
   const imageSelectHandler = (event) => {
     const imageFile = event.target.files[0];
+    console.log("file:", imageFile);
     setFileName(imageFile.name);
     setFile(imageFile);
     const fileReader = new FileReader();
@@ -26,7 +27,7 @@ const UploadForm = () => {
     const formData = new FormData();
     formData.append("image", file);
     try {
-      const res = await axios.post("/upload", formData, {
+      const res = await axios.post("/images", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress: (ProgressEvent) => {
           setPercent(
