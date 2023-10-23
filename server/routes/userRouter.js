@@ -46,19 +46,15 @@ module.exports = { userRouter };
 
 userRouter.patch("/logout", async (req, res) => {
   try {
-    console.log(req.headers);
-    const { sessionid } = req.headers;
-    if (!mongoose.isValidObjectId(sessionid))
-      throw new Error("invalid sessionId");
-    const user = await User.findOne({ "sessions._id": sessionid });
-    console.log(user);
-    if (!user) throw new Error("the sessionId does not exist in database.");
+    // console.log(req.user);
+    if (!req.user) throw new Error("invalid sessionId on logout request.");
     await User.updateOne(
-      { _id: user.id },
-      { $pull: { sessions: { _id: sessionid } } }
+      { _id: req.user.id },
+      { $pull: { sessions: { _id: req.headers.sessionid } } }
     );
     res.json({ message: "logout successful." });
   } catch (err) {
+    console.log(err);
     res.status(400).json({ message: err.message });
   }
 });
