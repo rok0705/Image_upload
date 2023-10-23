@@ -4,11 +4,13 @@ import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { Routes, Route } from "react-router-dom";
+import ToolBar from "./components/ToolBar";
 
 function App() {
   return (
     <div style={{ maxWidth: 600, margin: "auto" }}>
       <ToastContainer />
+      <ToolBar />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/auth/login" element={<LoginPage />} />
