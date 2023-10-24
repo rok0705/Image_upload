@@ -10,7 +10,6 @@ export const ImageProvider = (prop) => {
     const response = axios
       .get("/images")
       .then((result) => {
-        console.log("result:", result);
         setImages(result.data);
       })
       .catch((error) => console.log("ImageList:", error));

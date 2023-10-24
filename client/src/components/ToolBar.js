@@ -1,13 +1,41 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const ToolBar = () => {
+  const [me, setMe] = useContext(AuthContext);
+
+  const logoutHandler = async (event) => {
+    try {
+      await axios.patch("/users/logout");
+      setMe();
+      toast.success("logout success.");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
+    }
+    setMe(null);
+  };
+
   return (
     <div>
       <span>Home</span>
-      <Link to="http://localhost:3000/auth/login">
-        <span style={{ float: "right" }}>Login</span>
-      </Link>
+      {me ? (
+        <>
+          <span onClick={logoutHandler} style={{ float: "right" }}>
+            Logout
+          </span>
+        </>
+      ) : (
+        <>
+          <Link to="http://localhost:3000/auth/login">
+            <span style={{ float: "right" }}>Login</span>
+          </Link>
+        </>
+      )}
+
       <Link to="http://localhost:3000/auth/register">
         <span style={{ float: "right", marginRight: 15 }}>Register</span>
       </Link>

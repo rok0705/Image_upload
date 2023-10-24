@@ -6,14 +6,15 @@ const mongoose = require("mongoose");
 
 userRouter.post("/register", async (req, res) => {
   try {
+    console.log("req.body:\n", req.body);
     if (req.body.password.length < 6)
       throw new Error("password minimum length is 6.");
-    if (req.body.username.length < 3)
+    if (req.body.userName.length < 3)
       throw new Error("username minium length is 3.");
     const hashedPassword = await hash(req.body.password, 10);
     const user = await new User({
       name: req.body.name,
-      username: req.body.username,
+      username: req.body.userName,
       hashedPassword,
       sessions: [{ createdAt: new Date() }],
     }).save();
@@ -22,6 +23,7 @@ userRouter.post("/register", async (req, res) => {
       sessionId: user.sessions[0]._id,
     });
   } catch (err) {
+    console.log(err);
     res.status(400).json({ message: err.message });
   }
 });
@@ -46,7 +48,6 @@ module.exports = { userRouter };
 
 userRouter.patch("/logout", async (req, res) => {
   try {
-    // console.log(req.user);
     if (!req.user) throw new Error("invalid sessionId on logout request.");
     await User.updateOne(
       { _id: req.user.id },
