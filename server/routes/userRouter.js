@@ -27,6 +27,7 @@ userRouter.post("/register", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
 userRouter.patch("/login", async (req, res) => {
   try {
     console.log("req.body:", req.body);
@@ -47,8 +48,6 @@ userRouter.patch("/login", async (req, res) => {
   }
 });
 
-module.exports = { userRouter };
-
 userRouter.patch("/logout", async (req, res) => {
   try {
     if (!req.user) throw new Error("invalid sessionId on logout request.");
@@ -62,3 +61,21 @@ userRouter.patch("/logout", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+userRouter.get("/me", (req, res) => {
+  try {
+    console.log("req.user:", req.user);
+    if (!req.user) throw new Error("invalid privilege.");
+    res.json({
+      message: "success",
+      sessionId: req.headers.sessionid,
+      name: req.user.name,
+      userId: req.user._id,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
+module.exports = { userRouter };
