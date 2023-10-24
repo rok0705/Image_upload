@@ -32,6 +32,7 @@ userRouter.patch("/login", async (req, res) => {
   try {
     console.log("req.body:", req.body);
     const user = await User.findOne({ username: req.body.userName });
+    if (!user) throw new Error("invalid username.");
     const isValid = await compare(req.body.password, user.hashedPassword);
     if (!isValid) throw new Error("invalid user information.");
     user.sessions.push({ createdAt: new Date() });

@@ -28,8 +28,8 @@ const LoginPage = () => {
       navigate("/");
       toast.success("login success.");
     } catch (err) {
-      console.log(err);
-      toast.error(err.message);
+      console.error(err.response);
+      toast.error(err.response.data.message);
     }
   };
 
