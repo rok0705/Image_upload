@@ -3,6 +3,7 @@ import CustomInput from "./../components/CustomInput";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -10,6 +11,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [me, setMe] = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const submitHandler = async (event) => {
     try {
@@ -34,6 +36,7 @@ const RegisterPage = () => {
       });
       console.log(response);
       toast.success("New user registered successfully.");
+      navigate("/");
     } catch (err) {
       console.log(err);
       toast.error(err.message);

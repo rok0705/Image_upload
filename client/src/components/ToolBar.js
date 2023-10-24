@@ -19,13 +19,17 @@ const ToolBar = () => {
     setMe(null);
   };
 
+  console.log("toolbar->me:", me);
+
   return (
     <div>
-      <span>Home</span>
+      <Link to="/">
+        <span>Home</span>
+      </Link>
       {me ? (
         <>
           <span onClick={logoutHandler} style={{ float: "right" }}>
-            Logout
+            Logout ({me.name})
           </span>
         </>
       ) : (
@@ -33,12 +37,11 @@ const ToolBar = () => {
           <Link to="http://localhost:3000/auth/login">
             <span style={{ float: "right" }}>Login</span>
           </Link>
+          <Link to="http://localhost:3000/auth/register">
+            <span style={{ float: "right", marginRight: 15 }}>Register</span>
+          </Link>
         </>
       )}
-
-      <Link to="http://localhost:3000/auth/register">
-        <span style={{ float: "right", marginRight: 15 }}>Register</span>
-      </Link>
     </div>
   );
 };

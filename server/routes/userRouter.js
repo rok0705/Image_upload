@@ -29,15 +29,18 @@ userRouter.post("/register", async (req, res) => {
 });
 userRouter.patch("/login", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    console.log("req.body:", req.body);
+    const user = await User.findOne({ username: req.body.userName });
     const isValid = await compare(req.body.password, user.hashedPassword);
     if (!isValid) throw new Error("invalid user information.");
     user.sessions.push({ createdAt: new Date() });
     const session = user.sessions[user.sessions.length - 1];
     await user.save();
     res.json({
-      message: `${req.body.name} validated.`,
+      message: `${req.body.userName} validated.`,
+      userId: user.username,
       sessionId: session._id,
+      name: user.name,
     });
   } catch (err) {
     res.status(400).json({ message: err.message });
