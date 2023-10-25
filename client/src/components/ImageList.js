@@ -8,6 +8,7 @@ const ImageList = () => {
     <div>
       {images.map((image) => (
         <img
+          alt=""
           key={image.key}
           src={`http://localhost:5000/uploads/${image.key}`}
           style={{
