@@ -55,14 +55,42 @@ imageRouter.delete("/:imageId", async (req, res) => {
   }
 });
 
-imageRouter.patch("/:imageId/like", (req, res) => {
+imageRouter.patch("/:imageId/like", async (req, res) => {
   // 유저 권한 확인
   // like 중복 안되도록 확인
+  try {
+    if (!req.user) throw new Error("Not enough privilege.");
+    const image = await Image.findOneAndUpdate(
+      { _id: req.params.imageId },
+      { $addToSet: { likes: req.user.id } },
+      { new: true }
+    );
+    if (!mongoose.isValidObjectId(image)) throw new Error("Invalid imageId.");
+
+    res.json({ message: `${image.key} received a new like!` });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: err.message });
+  }
 });
 
-imageRouter.patch("/:imageId/unlike", (req, res) => {
+imageRouter.patch("/:imageId/unlike", async (req, res) => {
   // 유저 권한 확인
   // like 중복 안되도록 확인
+  try {
+    if (!req.user) throw new Error("Not enough privilege.");
+    const image = await Image.findOneAndUpdate(
+      { _id: req.params.imageId },
+      { $pull: { likes: req.user.id } },
+      { new: true }
+    );
+    if (!mongoose.isValidObjectId(image)) throw new Error("Invalid imageId.");
+
+    res.json({ message: `${image.key} received a dislike.` });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: err.message });
+  }
 });
 
 module.exports = { imageRouter };
