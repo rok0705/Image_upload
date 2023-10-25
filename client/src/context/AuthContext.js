@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const sessionId = localStorage.getItem("sessionId");
-    console.log("sessionId:", sessionId);
     if (me) {
       axios.defaults.headers.common.sessionid = me.sessionId;
       localStorage.setItem("sessionId", me.sessionId);

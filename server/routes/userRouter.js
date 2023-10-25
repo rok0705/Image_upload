@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const userRouter = Router();
 const User = require("../models/User");
+const Image = require("./../models/Image");
 const { hash, compare } = require("bcryptjs");
 const mongoose = require("mongoose");
 
@@ -75,6 +76,17 @@ userRouter.get("/me", (req, res) => {
     });
   } catch (err) {
     console.log(err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
+userRouter.get("/me/images", async (req, res) => {
+  // 본인의 사진들만 리턴 ( public == false)
+  try {
+    if (!req.user) throw new Error("Not enough Privilege.");
+    const images = await Image.find({ "user._id": req.user.id });
+    res.json(images);
+  } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });

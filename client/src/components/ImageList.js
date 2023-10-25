@@ -3,7 +3,6 @@ import { ImageContext } from "../context/ImageContext";
 
 const ImageList = () => {
   const [images] = useContext(ImageContext);
-  console.log("images:", images);
 
   return (
     <div>

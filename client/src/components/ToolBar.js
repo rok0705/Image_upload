@@ -19,8 +19,6 @@ const ToolBar = () => {
     setMe(null);
   };
 
-  console.log("toolbar->me:", me);
-
   return (
     <div>
       <Link to="/">
