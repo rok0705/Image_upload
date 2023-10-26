@@ -21,10 +21,15 @@ export const ImageProvider = (prop) => {
 
   useEffect(() => {
     if (me) {
-      axios
-        .get("/users/me/images")
-        .then((result) => setMyImages(result.data))
-        .catch((error) => console.log("ImageContext:", error));
+      setTimeout(() => {
+        axios
+          .get("/users/me/images")
+          .then((result) => setMyImages(result.data))
+          .catch((error) => console.log("ImageContext:", error));
+      }, 0);
+    } else {
+      setMyImages([]);
+      setIsPublic(true);
     }
   }, [me]);
 
