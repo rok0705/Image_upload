@@ -12,7 +12,7 @@ const UploadForm = () => {
   const [imgSrc, setImgSrc] = useState(null);
   const [fileName, setFileName] = useState(defaultFileName);
   const [percent, setPercent] = useState(0);
-  const { images, setImages, myImages, setMyImages } = useContext(ImageContext);
+  const [images, setImages] = useContext(ImageContext);
   const [isPublic, setIsPublic] = useState(true);
 
   const imageSelectHandler = (event) => {
@@ -46,8 +46,7 @@ const UploadForm = () => {
         setImgSrc(null);
       }, 6000);
       toast.success("image upload success.");
-      if (isPublic) setImages([...images, res.data]);
-      else setMyImages([...myImages, res.data]);
+      setImages([...images, res.data]);
     } catch (err) {
       setPercent(0);
       setFileName(defaultFileName);

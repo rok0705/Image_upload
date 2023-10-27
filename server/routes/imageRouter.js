@@ -67,7 +67,7 @@ imageRouter.patch("/:imageId/like", async (req, res) => {
     );
     if (!mongoose.isValidObjectId(image)) throw new Error("Invalid imageId.");
 
-    res.json(image);
+    res.json({ message: `${image.key} received a new like!` });
   } catch (err) {
     console.log(err);
     res.status(400).json({ message: err.message });
@@ -86,7 +86,7 @@ imageRouter.patch("/:imageId/unlike", async (req, res) => {
     );
     if (!mongoose.isValidObjectId(image)) throw new Error("Invalid imageId.");
 
-    res.json(image);
+    res.json({ message: `${image.key} received a dislike.` });
   } catch (err) {
     console.log(err);
     res.status(400).json({ message: err.message });
