@@ -12,14 +12,17 @@ const ImagePage = () => {
   const { images, myImages, setImages, setMyImages } = useContext(ImageContext);
   const [hasLiked, setHasLiked] = useState(false);
   const [me] = useContext(AuthContext);
+
   const image =
     images.find((image) => image._id === imageId) ||
     myImages.find((image) => image._id === imageId);
+
   const refreshImage = (images, image) =>
     [...images.filter((image) => image._id !== imageId), image].sort(
       (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     );
+
   const onSubmit = async () => {
     const result = await axios.patch(
       `/images/${imageId}/${hasLiked ? "unlike" : "like"}`
@@ -28,6 +31,7 @@ const ImagePage = () => {
     else setMyImages(refreshImage(images, result.data));
     setHasLiked(!hasLiked);
   };
+
   const deleteHandler = async () => {
     try {
       if (!window.confirm("Do you want to delete the image?")) return;

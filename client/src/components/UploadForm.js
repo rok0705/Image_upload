@@ -7,22 +7,36 @@ import ProgressBar from "./ProgressBar";
 import { ImageContext } from "../context/ImageContext";
 
 const UploadForm = () => {
-  const defaultFileName = "이미지 파일을 업로드해주세요.";
   const [files, setFiles] = useState(null);
-  const [imgSrc, setImgSrc] = useState(null);
-  const [fileName, setFileName] = useState(defaultFileName);
   const [percent, setPercent] = useState(0);
-  const { images, setImages, myImages, setMyImages } = useContext(ImageContext);
   const [isPublic, setIsPublic] = useState(true);
+  const [previews, setPreviews] = useState([]);
+  const { images, setImages, myImages, setMyImages } = useContext(ImageContext);
 
-  const imageSelectHandler = (event) => {
+  const imageSelectHandler = async (event) => {
     const imageFiles = event.target.files;
     setFiles(imageFiles);
-    const imageFile = imageFiles[0];
-    setFileName(imageFile.name);
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(imageFile);
-    fileReader.onload = (event) => setImgSrc(event.target.result);
+
+    console.log([...imageFiles]);
+    const imagePreviews = await Promise.all(
+      [...imageFiles].map((imageFile) => {
+        return new Promise((resolve, reject) => {
+          try {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(imageFile);
+            fileReader.onload = (event) =>
+              resolve({
+                imgSrc: event.target.result,
+                fileName: imageFile.name,
+              });
+          } catch (err) {
+            reject(err);
+          }
+        });
+      })
+    );
+
+    setPreviews(imagePreviews);
   };
 
   const onSubmit = async (event) => {
@@ -41,28 +55,40 @@ const UploadForm = () => {
       });
       setTimeout(() => {
         setPercent(0);
-        setFileName(defaultFileName);
-        setImgSrc(null);
+        setPreviews([]);
       }, 3000);
       toast.success("image upload success.");
       if (isPublic) setImages([...images, ...res.data]);
       else setMyImages([...myImages, ...res.data]);
     } catch (err) {
       setPercent(0);
-      setFileName(defaultFileName);
-      setImgSrc(null);
+      setPreviews([]);
       toast.error(err.response.data.message);
     }
   };
 
+  const previewImages = previews.map((preview, index) => (
+    <img
+      style={{ width: 200, height: 200, objectFit: "cover" }}
+      key={index}
+      alt=""
+      src={preview.imgSrc}
+      className={`image-preview ${preview.imgSrc && "image-preview-show"}`}
+    ></img>
+  ));
+
+  const fileName =
+    previews.length === 0
+      ? "이미지 파일을 업로드 해주세요."
+      : previews.reduce(
+          (previous, current) => previous + `${current.fileName},`,
+          ""
+        );
+
   return (
     <div>
       <form onSubmit={(event) => onSubmit(event)}>
-        <img
-          alt=""
-          src={imgSrc}
-          className={`image-preview ${imgSrc ? "image-preview-show" : ""}`}
-        />
+        <div style={{ display: "flex", flexWrap: "wrap" }}>{previewImages}</div>
         <ProgressBar percent={percent} />
         <div className="file-dropper">
           {fileName}
