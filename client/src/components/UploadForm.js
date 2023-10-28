@@ -8,7 +8,7 @@ import { ImageContext } from "../context/ImageContext";
 
 const UploadForm = () => {
   const defaultFileName = "이미지 파일을 업로드해주세요.";
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState(null);
   const [imgSrc, setImgSrc] = useState(null);
   const [fileName, setFileName] = useState(defaultFileName);
   const [percent, setPercent] = useState(0);
@@ -16,10 +16,10 @@ const UploadForm = () => {
   const [isPublic, setIsPublic] = useState(true);
 
   const imageSelectHandler = (event) => {
-    const imageFile = event.target.files[0];
-    console.log("file:", imageFile);
+    const imageFiles = event.target.files;
+    setFiles(imageFiles);
+    const imageFile = imageFiles[0];
     setFileName(imageFile.name);
-    setFile(imageFile);
     const fileReader = new FileReader();
     fileReader.readAsDataURL(imageFile);
     fileReader.onload = (event) => setImgSrc(event.target.result);
@@ -28,9 +28,8 @@ const UploadForm = () => {
   const onSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("image", file);
+    for (let file of files) formData.append("image", file);
     formData.append("public", isPublic);
-    console.log("formData:", formData);
     try {
       const res = await axios.post("/images", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -46,8 +45,8 @@ const UploadForm = () => {
         setImgSrc(null);
       }, 3000);
       toast.success("image upload success.");
-      if (isPublic) setImages([...images, res.data]);
-      else setMyImages([...myImages, res.data]);
+      if (isPublic) setImages([...images, ...res.data]);
+      else setMyImages([...myImages, ...res.data]);
     } catch (err) {
       setPercent(0);
       setFileName(defaultFileName);
@@ -70,6 +69,7 @@ const UploadForm = () => {
           <input
             id="image"
             type="file"
+            multiple
             accept="image/*"
             onChange={(event) => imageSelectHandler(event)}
           ></input>

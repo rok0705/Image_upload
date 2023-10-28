@@ -66,7 +66,6 @@ userRouter.patch("/logout", async (req, res) => {
 
 userRouter.get("/me", (req, res) => {
   try {
-    console.log("req.user:", req.user);
     if (!req.user) throw new Error("invalid privilege.");
     res.json({
       message: "success",
