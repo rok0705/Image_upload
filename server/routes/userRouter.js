@@ -83,6 +83,7 @@ userRouter.get("/me", (req, res) => {
 userRouter.get("/me/images", async (req, res) => {
   // 본인의 사진들만 리턴 ( public == false)
   try {
+    // console.log("me/images:", req.user);
     if (!req.user) throw new Error("Not enough Privilege.");
     const images = await Image.find({ "user._id": req.user.id });
     res.json(images);

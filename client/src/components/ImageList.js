@@ -1,10 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { ImageContext } from "../context/ImageContext";
 
 const ImageList = () => {
-  const [images] = useContext(ImageContext);
-  const [isPublic, setIsPublic] = useState(true);
-  const imgList = images.map((image) => (
+  const { images, myImages, isPublic, setIsPublic } = useContext(ImageContext);
+
+  const imgList = (isPublic ? images : myImages).map((image) => (
     <img
       alt=""
       key={image.key}
