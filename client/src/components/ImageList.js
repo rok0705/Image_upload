@@ -5,7 +5,8 @@ import "./ImageList.css";
 import { Link } from "react-router-dom";
 
 const ImageList = () => {
-  const { images, myImages, isPublic, setIsPublic } = useContext(ImageContext);
+  const { images, myImages, isPublic, setIsPublic, loaderMoreImages } =
+    useContext(ImageContext);
   const [me] = useContext(AuthContext);
 
   const imgList = (isPublic ? images : myImages).map((image) => (
@@ -33,6 +34,7 @@ const ImageList = () => {
         </button>
       )}
       <div className="image-list-container">{imgList}</div>
+      <button onClick={loaderMoreImages}>Load more Images</button>
     </div>
   );
 };
