@@ -12,6 +12,7 @@ const ImageList = () => {
     setIsPublic,
     loaderMoreImages,
     imageLoading,
+    imageError,
   } = useContext(ImageContext);
   const [me] = useContext(AuthContext);
 
@@ -40,7 +41,10 @@ const ImageList = () => {
         </button>
       )}
       <div className="image-list-container">{imgList}</div>
-      {!imageLoading && (
+      {imageError && <div>Error.</div>}
+      {imageLoading ? (
+        <div>Loading.</div>
+      ) : (
         <button onClick={loaderMoreImages}>Load more Images</button>
       )}
     </div>
