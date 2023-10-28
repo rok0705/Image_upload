@@ -1,22 +1,30 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ImageContext } from "../context/ImageContext";
 
 const ImageList = () => {
   const [images] = useContext(ImageContext);
+  const [isPublic, setIsPublic] = useState(true);
+  const imgList = images.map((image) => (
+    <img
+      alt=""
+      key={image.key}
+      src={`http://localhost:5000/uploads/${image.key}`}
+      style={{
+        maxWidth: 600,
+        margin: "auto",
+      }}
+    ></img>
+  ));
 
   return (
     <div>
-      {images.map((image) => (
-        <img
-          alt=""
-          key={image.key}
-          src={`http://localhost:5000/uploads/${image.key}`}
-          style={{
-            maxWidth: 600,
-            margin: "auto",
-          }}
-        ></img>
-      ))}
+      <h3 style={{ display: "inline-block", marginRight: 10 }}>
+        Image List ({isPublic ? "공개 사진" : "개인 사진"})
+      </h3>
+      <button onClick={() => setIsPublic(!isPublic)}>
+        {isPublic ? "개인 사진 보기" : "공개 사진 보기"}
+      </button>
+      {imgList}
     </div>
   );
 };
