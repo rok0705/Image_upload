@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { ImageContext } from "../context/ImageContext";
 import { AuthContext } from "../context/AuthContext";
@@ -14,31 +14,33 @@ const ImagePage = () => {
   const [image, setImage] = useState();
   const [error, setError] = useState(false);
   const [me] = useContext(AuthContext);
-  const imageRef = useRef();
 
   useEffect(() => {
-    imageRef.current = images.find((image) => image._id === imageId);
+    const img = images.find((image) => image._id === imageId);
+    if (img) setImage(img);
   }, [images, imageId]);
 
   useEffect(() => {
-    if (imageRef.current) setImage(imageRef.current);
-    else
-      axios
-        .get(`/images/${imageId}`)
-        .then(({ data }) => {
-          setImage(data);
-          setError(false);
-        })
-        .catch((err) => {
-          toast.error(err.response.data.message);
-          setError(true);
-        });
-  }, [imageId]);
+    if (image && image._id === imageId) return;
+    axios
+      .get(`/images/${imageId}`)
+      .then(({ data }) => {
+        setImage(data);
+        setError(false);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+        setError(true);
+      });
+  }, [imageId, image]);
 
   const refreshImage = (images, image) =>
     [...images.filter((image) => image._id !== imageId), image].sort(
-      (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      (a, b) => {
+        if (b._id > a._id) return 1;
+        else return -1;
+      }
+      // new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
   const onSubmit = async () => {

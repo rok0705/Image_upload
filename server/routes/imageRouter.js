@@ -83,10 +83,8 @@ imageRouter.get("/:imageId", async (req, res) => {
 
     const image = await Image.findOne({ _id: imageId });
     if (!image) throw new Error("Image does not exist.");
-    console.log("22:", req.user);
     if (!image.public && (!req.user || req.user.id !== image.user.id))
       throw new Error("no privilege.");
-    console.log("33");
     res.json(image);
   } catch (err) {
     res.status(400).json({ message: err.message });
