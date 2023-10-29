@@ -9,13 +9,11 @@ import { useNavigate } from "react-router-dom";
 const ImagePage = () => {
   const navigate = useNavigate();
   const { imageId } = useParams();
-  const { images, myImages, setImages, setMyImages } = useContext(ImageContext);
+  const { images, setImages, setMyImages } = useContext(ImageContext);
   const [hasLiked, setHasLiked] = useState(false);
   const [me] = useContext(AuthContext);
 
-  const image =
-    images.find((image) => image._id === imageId) ||
-    myImages.find((image) => image._id === imageId);
+  const image = images.find((image) => image._id === imageId);
 
   const refreshImage = (images, image) =>
     [...images.filter((image) => image._id !== imageId), image].sort(
@@ -27,8 +25,10 @@ const ImagePage = () => {
     const result = await axios.patch(
       `/images/${imageId}/${hasLiked ? "unlike" : "like"}`
     );
-    if (result.data.public) setImages(refreshImage(images, result.data));
-    else setMyImages(refreshImage(images, result.data));
+    if (result.data.public)
+      setImages((prevData) => refreshImage(prevData, result.data));
+    setMyImages((prevData) => refreshImage(prevData, result.data));
+
     setHasLiked(!hasLiked);
   };
 
@@ -36,8 +36,12 @@ const ImagePage = () => {
     try {
       if (!window.confirm("Do you want to delete the image?")) return;
       const result = await axios.delete(`/images/${imageId}`);
-      setImages(images.filter((image) => image._id !== imageId));
-      setMyImages(myImages.filter((image) => image._id !== imageId));
+      setImages((prevData) =>
+        prevData.filter((image) => image._id !== imageId)
+      );
+      setMyImages((prevData) =>
+        prevData.filter((image) => image._id !== imageId)
+      );
       toast.success(result.data.message);
       navigate("/");
     } catch (err) {

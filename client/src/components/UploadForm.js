@@ -11,7 +11,7 @@ const UploadForm = () => {
   const [percent, setPercent] = useState(0);
   const [isPublic, setIsPublic] = useState(true);
   const [previews, setPreviews] = useState([]);
-  const { setImages } = useContext(ImageContext);
+  const { setImages, setMyImages } = useContext(ImageContext);
 
   const imageSelectHandler = async (event) => {
     const imageFiles = event.target.files;
@@ -53,7 +53,8 @@ const UploadForm = () => {
           );
         },
       });
-      setImages((prevData) => [...prevData, ...res.data]);
+      if (isPublic) setImages((prevData) => [...res.data, ...prevData]);
+      setMyImages((prevData) => [...res.data, ...prevData]);
       toast.success("image upload success.");
       setTimeout(() => {
         setPercent(0);
