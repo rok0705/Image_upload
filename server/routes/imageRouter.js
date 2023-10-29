@@ -49,7 +49,7 @@ imageRouter.get("/", async (req, res) => {
           }
     )
       .sort({ _id: -1 })
-      .limit(20);
+      .limit(10);
     res.json(images);
   } catch (err) {
     res.status(400).json({ message: err.message });

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect } from "react";
+import React, { useContext, useRef, useEffect, useCallback } from "react";
 import { ImageContext } from "../context/ImageContext";
 import { AuthContext } from "../context/AuthContext";
 import "./ImageList.css";
@@ -7,21 +7,26 @@ import { Link } from "react-router-dom";
 const ImageList = () => {
   const {
     images,
-    myImages,
     isPublic,
     setIsPublic,
-    loaderMoreImages,
+    setImageUrl,
     imageLoading,
     imageError,
   } = useContext(ImageContext);
   const [me] = useContext(AuthContext);
   const elementRef = useRef(null);
 
+  const loaderMoreImages = useCallback(() => {
+    if (images.length === 0 || imageLoading) return;
+    const lastImageId = images[images.length - 1]._id;
+    setImageUrl(`${isPublic ? "" : "/users/me/"}/images?lastid=${lastImageId}`);
+  }, [images, imageLoading, isPublic, setImageUrl]);
+
   useEffect(() => {
     if (!elementRef.current) return;
     const observer = new IntersectionObserver(([entry]) => {
-      console.log(entry.isIntersecting);
       if (entry.isIntersecting) {
+        console.log(entry.isIntersecting);
         loaderMoreImages();
       }
     });
@@ -29,41 +34,15 @@ const ImageList = () => {
     return () => observer.disconnect();
   }, [loaderMoreImages]);
 
-  const imgList = isPublic
-    ? images.map((image, index) => (
-        <Link
-          key={image.key}
-          to={`/images/${image._id}`}
-          ref={index + 5 === images.length ? elementRef : undefined}
-        >
-          <img
-            alt=""
-            key={image.key}
-            src={`http://localhost:5000/uploads/${image.key}`}
-            style={{
-              maxWidth: 600,
-              margin: "auto",
-            }}
-          ></img>
-        </Link>
-      ))
-    : myImages.map((image, index) => (
-        <Link
-          key={image.key}
-          to={`/images/${image._id}`}
-          ref={index + 5 === myImages.length ? elementRef : undefined}
-        >
-          <img
-            alt=""
-            key={image.key}
-            src={`http://localhost:5000/uploads/${image.key}`}
-            style={{
-              maxWidth: 600,
-              margin: "auto",
-            }}
-          ></img>
-        </Link>
-      ));
+  const imgList = images.map((image, index) => (
+    <Link
+      key={image.key}
+      to={`/images/${image._id}`}
+      ref={index + 5 === images.length ? elementRef : undefined}
+    >
+      <img alt="" src={`http://localhost:5000/uploads/${image.key}`}></img>
+    </Link>
+  ));
 
   return (
     <div>
