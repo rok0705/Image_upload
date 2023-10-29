@@ -62,10 +62,9 @@ imageRouter.delete("/:imageId", async (req, res) => {
   // 1. uploads 폴더에 있는 사진 삭제
   // 2. mongoDB 에 있는 document 삭제
   try {
-    console.log(req.params);
+    const { imageId } = req.params;
     if (!req.user) throw new Error("Not enough privilege.");
-    if (!mongoose.isValidObjectId(req.params.imageId))
-      throw new Error("Invalid ImageId.");
+    if (!mongoose.isValidObjectId(imageId)) throw new Error("Invalid ImageId.");
 
     const image = await Image.findOneAndDelete({ _id: req.params.imageId });
     if (!image) return res.json({ message: "The image does not exist." });
@@ -73,6 +72,23 @@ imageRouter.delete("/:imageId", async (req, res) => {
     res.json({ message: `${image.key} deleted successfully.` });
   } catch (err) {
     console.log(err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
+imageRouter.get("/:imageId", async (req, res) => {
+  try {
+    const { imageId } = req.params;
+    if (!mongoose.isValidObjectId(imageId)) throw new Error("Invalid imageId.");
+
+    const image = await Image.findOne({ _id: imageId });
+    if (!image) throw new Error("Image does not exist.");
+    console.log("22:", req.user);
+    if (!image.public && (!req.user || req.user.id !== image.user.id))
+      throw new Error("no privilege.");
+    console.log("33");
+    res.json(image);
+  } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });

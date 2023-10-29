@@ -5,7 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { Routes, Route } from "react-router-dom";
 import ToolBar from "./components/ToolBar";
-import ImagePage from "./components/ImagePage";
+import ImagePage from "./pages/ImagePage";
 
 function App() {
   return (
