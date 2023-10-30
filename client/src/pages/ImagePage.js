@@ -83,7 +83,7 @@ const ImagePage = () => {
       <img
         style={{ width: "100%" }}
         alt={imageId}
-        src={`http://localhost:5000/uploads/${image.key}`}
+        src={`https://image-upload-storage.s3.us-east-2.amazonaws.com/raw/${image.key}`}
       ></img>
       <span>좋아요 {image.likes.length}</span>
       {me && image.user._id === me.userId && (

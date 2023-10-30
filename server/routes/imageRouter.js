@@ -6,6 +6,7 @@ const fs = require("fs");
 const { promisify } = require("util");
 const fileUnlink = promisify(fs.unlink);
 const mongoose = require("mongoose");
+const { s3 } = require("../aws");
 
 imageRouter.post("/", upload.array("image", 5), async (req, res) => {
   // 유저 정보, public 유무 확인
@@ -68,7 +69,17 @@ imageRouter.delete("/:imageId", async (req, res) => {
 
     const image = await Image.findOneAndDelete({ _id: req.params.imageId });
     if (!image) return res.json({ message: "The image does not exist." });
-    await fileUnlink(`./uploads/${image.key}`);
+    // await fileUnlink(`./uploads/${image.key}`);
+    s3.deleteObject(
+      {
+        Bucket: "image-upload-storage",
+        Key: `raw/${image.key}`,
+      },
+      (error, data) => {
+        if (error) throw error;
+      }
+    );
+
     res.json({ message: `${image.key} deleted successfully.` });
   } catch (err) {
     console.log(err);
