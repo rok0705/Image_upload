@@ -1,9 +1,7 @@
 
 
 
-Frontend: React.js, axios
-
-Backend: express.js, mongoose
-
-Database: mongoDB Atlas
+Frontend: React.js, axios, useContext
+Backend: express.js, multer
+Database: mongoDB Atlas(image, user info), AWS S3(image files)
 
