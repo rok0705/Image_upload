@@ -38,8 +38,6 @@ app.get("/api/item/:slug", (req, res) => {
   res.end(`Item: ${slug}`);
 });
 
-// app.use("/api/uploads,", express.static("uploads"));
-
 app.post("/api/upload", upload.single("image"), (req, res) => {
   console.log("req.file:", req.file, uuid());
   res.json(req.file);

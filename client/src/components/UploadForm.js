@@ -40,6 +40,42 @@ const UploadForm = () => {
     setPreviews(imagePreviews);
   };
 
+  const onSubmitV2 = async (event) => {
+    event.preventDefault();
+    try {
+      // image signed by backend.
+      const presignedData = await axios.post("/images/presigned", {
+        contentTypes: [...files].map((file) => file.type),
+      });
+
+      const result = await Promise.all(
+        [...files].map((file, index) => {
+          const { presigned } = presignedData.data[index];
+          const formData = new FormData();
+          for (const key in presigned.fields) {
+            formData.append(key, presigned.fields[key]);
+          }
+          formData.append("Content-Type", file.type);
+          formData.append("file", file);
+          return axios.post(presigned.url, formData);
+        })
+      );
+
+      console.log("result:", result);
+      toast.success("image upload success.");
+      setTimeout(() => {
+        setPercent(0);
+        setPreviews([]);
+        inputRef.current.value = null;
+      }, 3000);
+    } catch (err) {
+      inputRef.current.value = null;
+      toast.error(err.response.data.message);
+      setPercent(0);
+      setPreviews([]);
+    }
+  };
+
   const onSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
@@ -63,10 +99,10 @@ const UploadForm = () => {
         inputRef.current.value = null;
       }, 3000);
     } catch (err) {
-      setPercent(0);
-      setPreviews([]);
       inputRef.current.value = null;
       toast.error(err.response.data.message);
+      setPercent(0);
+      setPreviews([]);
     }
   };
 
@@ -90,7 +126,7 @@ const UploadForm = () => {
 
   return (
     <div>
-      <form onSubmit={(event) => onSubmit(event)}>
+      <form onSubmit={(event) => onSubmitV2(event)}>
         <div style={{ display: "flex", flexWrap: "wrap" }}>{previewImages}</div>
         <ProgressBar percent={percent} />
         <div className="file-dropper">
