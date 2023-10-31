@@ -43,7 +43,7 @@ const UploadForm = () => {
   const onSubmitV2 = async (event) => {
     event.preventDefault();
     try {
-      // image sign by AWS S3 API.
+      // Presign by S3.
       const presignedData = await axios.post("/images/presigned", {
         contentTypes: [...files].map((file) => file.type),
       });
@@ -57,6 +57,7 @@ const UploadForm = () => {
           }
           formData.append("Content-Type", file.type);
           formData.append("file", file);
+          // POST to S3.
           return axios.post(presigned.url, formData, {
             onUploadProgress: (event) => {
               setPercent((prevData) => {
@@ -70,6 +71,7 @@ const UploadForm = () => {
         })
       );
 
+      // Update backend.
       const res = await axios.post("/images", {
         images: [...files].map((file, index) => ({
           imageKey: presignedData.data[index].imageKey,
