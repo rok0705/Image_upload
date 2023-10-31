@@ -43,12 +43,12 @@ const UploadForm = () => {
   const onSubmitV2 = async (event) => {
     event.preventDefault();
     try {
-      // image signed by backend.
+      // image sign by AWS S3 API.
       const presignedData = await axios.post("/images/presigned", {
         contentTypes: [...files].map((file) => file.type),
       });
 
-      const result = await Promise.all(
+      await Promise.all(
         [...files].map((file, index) => {
           const { presigned } = presignedData.data[index];
           const formData = new FormData();
@@ -61,7 +61,17 @@ const UploadForm = () => {
         })
       );
 
-      console.log("result:", result);
+      const res = await axios.post("/images", {
+        images: [...files].map((file, index) => ({
+          imageKey: presignedData.data[index].imageKey,
+          originalname: file.originalname,
+        })),
+        public: isPublic,
+      });
+
+      if (isPublic) setImages((prevData) => [...res.data, ...prevData]);
+      setMyImages((prevData) => [...res.data, ...prevData]);
+
       toast.success("image upload success.");
       setTimeout(() => {
         setPercent(0);

@@ -33,27 +33,54 @@ imageRouter.post("/", upload.array("image", 5), async (req, res) => {
   // 유저 정보, public 유무 확인
   try {
     if (!req.user) throw new Error("Not enough Privilege.");
-    const images = await Promise.all(
-      req.files.map(async (file) => {
-        const image = await new Image({
-          user: {
-            _id: req.user.id,
-            name: req.user.name,
-            username: req.user.username,
-          },
-          public: req.body.public,
-          key: file.key.replace("raw/", ""),
-          originalFileName: file.originalname,
-        }).save();
-        return image;
-      })
+    const { images, public } = req.body;
+
+    const imageDocs = await Promise.all(
+      images.map(
+        (image) =>
+          new Image({
+            user: {
+              _id: req.user.id,
+              name: req.user.name,
+              username: req.user.username,
+            },
+            public,
+            key: image.imageKey,
+            originalFileName: image.originalname,
+          })
+      )
     );
 
-    res.json(images);
+    res.json(imageDocs);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
+
+// imageRouter.post("/", upload.array("image", 5), async (req, res) => {
+//   // 유저 정보, public 유무 확인
+//   try {
+//     if (!req.user) throw new Error("Not enough Privilege.");
+//     const images = await Promise.all(
+//       req.files.map(async (file) => {
+//         const image = await new Image({
+//           user: {
+//             _id: req.user.id,
+//             name: req.user.name,
+//             username: req.user.username,
+//           },
+//           public: req.body.public,
+//           key: file.key.replace("raw/", ""),
+//           originalFileName: file.originalname,
+//         }).save();
+//         return image;
+//       })
+//     );
+//     res.json(images);
+//   } catch (err) {
+//     res.status(400).json({ message: err.message });
+//   }
+// });
 
 imageRouter.get("/", async (req, res) => {
   try {
