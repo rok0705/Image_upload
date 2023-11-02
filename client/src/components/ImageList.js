@@ -3,6 +3,7 @@ import { ImageContext } from "../context/ImageContext";
 import { AuthContext } from "../context/AuthContext";
 import "./ImageList.css";
 import { Link } from "react-router-dom";
+import Image from "./Image"
 
 const ImageList = () => {
   const {
@@ -40,10 +41,7 @@ const ImageList = () => {
       to={`/images/${image._id}`}
       ref={index + 5 === images.length ? elementRef : undefined}
     >
-      <img
-        alt=""
-        src={`https://image-upload-storage.s3.us-east-2.amazonaws.com/raw/${image.key}`}
-      ></img>
+      <Image imageUrl={`https://image-upload-storage.s3.us-east-2.amazonaws.com/w140/${image.key}`}/>
     </Link>
   ));
 

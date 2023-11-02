@@ -11,6 +11,7 @@ const UploadForm = () => {
   const [percent, setPercent] = useState([]);
   const [isPublic, setIsPublic] = useState(true);
   const [previews, setPreviews] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { setImages, setMyImages } = useContext(ImageContext);
   const inputRef = useRef();
 
@@ -41,8 +42,9 @@ const UploadForm = () => {
   };
 
   const onSubmitV2 = async (event) => {
-    event.preventDefault();
+    event.preventDefault();    
     try {
+      setLoading(true);
       // Presign by S3.
       const presignedData = await axios.post("/images/presigned", {
         contentTypes: [...files].map((file) => file.type),
@@ -87,6 +89,7 @@ const UploadForm = () => {
       setTimeout(() => {
         setPercent([]);
         setPreviews([]);
+        setLoading(false);
         inputRef.current.value = null;
       }, 3000);
     } catch (err) {
@@ -94,6 +97,7 @@ const UploadForm = () => {
       toast.error(err.response.data.message);
       setPercent([]);
       setPreviews([]);
+      setLoading(false);
     }
   };
 
@@ -179,6 +183,7 @@ const UploadForm = () => {
         <label htmlFor="public-check">비공개</label>
         <button
           type="submit"
+          disabled={loading}
           style={{
             width: "100%",
             height: 40,
