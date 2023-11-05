@@ -19,7 +19,6 @@ const UploadForm = () => {
     const imageFiles = event.target.files;
     setFiles(imageFiles);
 
-    console.log([...imageFiles]);
     const imagePreviews = await Promise.all(
       [...imageFiles].map((imageFile) => {
         return new Promise((resolve, reject) => {
@@ -42,7 +41,7 @@ const UploadForm = () => {
   };
 
   const onSubmitV2 = async (event) => {
-    event.preventDefault();    
+    event.preventDefault();
     try {
       setLoading(true);
       // Presign by S3.
@@ -63,7 +62,6 @@ const UploadForm = () => {
           return axios.post(presigned.url, formData, {
             onUploadProgress: (event) => {
               setPercent((prevData) => {
-                console.log("prevData:", prevData);
                 const newData = [...prevData];
                 newData[index] = Math.round((100 * event.loaded) / event.total);
                 return newData;
