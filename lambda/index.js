@@ -16,7 +16,6 @@ const transformationOptions = [
 exports.handler = async (event) => {
   try {
     const Key = event.Records[0].s3.object.key;
-    console.log("Key:", Key);
     const keyOnly = Key.split("/")[1];
     const image = await s3
       .getObject({
