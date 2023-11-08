@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
           })
         )
         .catch((err) => {
-          console.log("err:", err);
+          console.log(err);
           localStorage.removeItem("sessionId");
           delete axios.defaults.headers.common.sessionid;
         });

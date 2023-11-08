@@ -18,7 +18,6 @@ exports.handler = async (event) => {
     const Key = event.Records[0].s3.object.key;
     console.log("Key:", Key);
     const keyOnly = Key.split("/")[1];
-    console.log(`Image Resizing: ${keyOnly}`);
     const image = await s3
       .getObject({
         Bucket: "image-upload-storage",
